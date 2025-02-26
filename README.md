@@ -23,57 +23,57 @@ The goal is to perform the following tasks:
 The following HiveQL queries were used to perform the analysis tasks:
 
 ### 1. Count Total Web Requests
-sql
+```sql
 INSERT OVERWRITE DIRECTORY '/user/hue/output/total_requests'
 SELECT COUNT(*) FROM hue__tmp_web_server_logs;
-
+```
 Retrieve the output in bash
-bash
+```bash
 hdfs dfs -getmerge /user/hue/output/total_requests total_requests.txt
-
+```
 
 ### 2. Export Status Code Analysis
-sql
+```sql
 INSERT OVERWRITE DIRECTORY '/user/hue/output/status_codes'
 SELECT status, COUNT(*) 
 FROM hue__tmp_web_server_logs
 GROUP BY status 
 ORDER BY status;
-
+```
 Retrieve the output in bash
-bash
+```bash
 hdfs dfs -getmerge /user/hue/output/status_codes status_codes.txt
-
+```
 
 ### 3. Export Most Visited Pages
-sql
+```sql
 INSERT OVERWRITE DIRECTORY '/user/hue/output/most_visited_pages'
 SELECT url, COUNT(*) AS visit_count
 FROM hue__tmp_web_server_logs
 GROUP BY url
 ORDER BY visit_count DESC
 LIMIT 3;
-
+```
 Retrieve the output in bash
-bash
+```bash
 hdfs dfs -getmerge /user/hue/output/most_visited_pages most_visited_pages.txt
-
+```
 
 ### 4. Export Traffic Source Analysis
-sql
+```sql
 INSERT OVERWRITE DIRECTORY '/user/hue/output/user_agents'
 SELECT user_agent, COUNT(*) AS user_count
 FROM hue__tmp_web_server_logs
 GROUP BY user_agent
 ORDER BY user_count DESC;
-
+```
 Retrieve the output in bash
-bash
+```bash
 hdfs dfs -getmerge /user/hue/output/user_agents user_agents.txt
-
+```
 
 ### 5. Export Suspicious IP Addresses
-sql
+```sql
 INSERT OVERWRITE DIRECTORY '/user/hue/output/suspicious_ips'
 SELECT ip, COUNT(*) AS failed_requests
 FROM hue__tmp_web_server_logs
@@ -81,11 +81,11 @@ WHERE status IN (404, 500)
 GROUP BY ip
 HAVING COUNT(*) > 3
 ORDER BY failed_requests DESC;
-
+```
 Retrieve the output in bash
-bash
+```bash
 hdfs dfs -getmerge /user/hue/output/suspicious_ips suspicious_ips.txt
-
+```
 
 ### 6. Export Suspicious IP Addresses
 sql
@@ -103,54 +103,54 @@ hdfs dfs -getmerge /user/hue/output/traffic_trends traffic_trends.txt
 ## Execution Steps
 Now run the following commands:
 
-bash
+```bash
 hdfs dfs -getmerge /user/hue/output/total_requests total_requests.txt
+```
 
-
-bash
+```bash
 hdfs dfs -getmerge /user/hue/output/status_codes status_codes.txt
+```
 
-
-bash
+```bash
 hdfs dfs -getmerge /user/hue/output/most_visited_pages most_visited_pages.txt
+```
 
-
-bash
+```bash
 hdfs dfs -getmerge /user/hue/output/user_agents user_agents.txt
+```
 
-
-bash
+```bash
 hdfs dfs -getmerge /user/hue/output/suspicious_ips suspicious_ips.txt
-
-bash
+```
+```bash
 hdfs dfs -getmerge /user/hue/output/traffic_trends traffic_trends.txt
-
+```
 
 Now exit and run these commands to save the output files in a new directory called output. If this folder doesn't exit, create one.
 
-bash
+```bash
 docker cp resourcemanager:/total_requests.txt output/
+```
 
-
-bash
+```bash
 docker cp resourcemanager:/status_codes.txt output/
+```
 
-
-bash
+```bash
 docker cp resourcemanager:/most_visited_pages.txt output/
+```
 
-
-bash
+```bash
 docker cp resourcemanager:/user_agents.txt output/
+```
 
-
-bash
+```bash
 docker cp resourcemanager:/suspicious_ips.txt output/
+```
 
-
-bash
+```bash
 docker cp resourcemanager:/traffic_trends.txt output/
-
+```
 
 ## Challenges Faced
 #### HDFS Permissions:
